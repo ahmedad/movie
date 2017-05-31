@@ -1,17 +1,7 @@
 class RatingsController < ApplicationController
   before_action :set_rating, only: [:show, :edit, :update, :destroy]
+  before_action :set_movie
   before_action :authenticate_user!
-
-  # GET /ratings
-  # GET /ratings.json
-  def index
-    @ratings = Rating.all
-  end
-
-  # GET /ratings/1
-  # GET /ratings/1.json
-  def show
-  end
 
   # GET /ratings/new
   def new
@@ -27,10 +17,11 @@ class RatingsController < ApplicationController
   def create
     @rating = Rating.new(rating_params)
     @rating.user_id = current_user.id
+    @rating.movie_id = @movie.id
 
     respond_to do |format|
       if @rating.save
-        format.html { redirect_to @rating, notice: 'Rating was successfully created.' }
+        format.html { redirect_to @movie, notice: 'Rating was successfully created.' }
         format.json { render :show, status: :created, location: @rating }
       else
         format.html { render :new }
@@ -67,6 +58,10 @@ class RatingsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_rating
       @rating = Rating.find(params[:id])
+    end
+
+    def set_movie
+      @movie = Movie.find(params[:movie_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
